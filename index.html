@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Changelog del Servidor</title>
+  <style>
+    /* Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #0d0d0d;
+      color: #fff;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    /* Fondo partículas */
+    #particles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+
+    /* Pantalla de carga */
+    #loader {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: #0d0d0d;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      z-index: 9999;
+    }
+
+    #loader .box {
+      background: rgba(20, 20, 20, 0.6);
+      backdrop-filter: blur(10px);
+      padding: 20px 40px;
+      border-radius: 12px;
+      text-align: center;
+      border: 1px solid rgba(0,255,180,0.2);
+    }
+
+    #loader p {
+      font-size: 1rem;
+      margin-bottom: 15px;
+      color: #fff;
+    }
+
+    .progress {
+      width: 250px;
+      height: 8px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      width: 0%;
+      height: 100%;
+      background: #00ff99;
+      transition: width 0.3s ease;
+    }
+
+    /* Contenido */
+    header {
+      text-align: center;
+      padding: 30px 20px 10px;
+    }
+
+    header h1 {
+      font-size: 2.2rem;
+      color: #00ff99;
+      font-weight: bold;
+      text-shadow: none; /* ✅ sin sombra */
+    }
+
+    .update {
+      background: rgba(26, 26, 26, 0.5);
+      backdrop-filter: blur(12px); /* efecto liquid glass */
+      margin: 20px auto;
+      padding: 20px;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 700px;
+      border: 1px solid rgba(0,255,180,0.2);
+    }
+
+    .update h2 {
+      color: #00ff99;
+      margin-bottom: 10px;
+    }
+
+    .update ul {
+      list-style: none;
+    }
+
+    .update ul li::before {
+      content: "◆ ";
+      color: #00ff99;
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 15px;
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.5);
+      margin-top: 20px;
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      header h1 {
+        font-size: 1.6rem;
+      }
+
+      .update {
+        padding: 15px;
+        font-size: 0.9rem;
+      }
+
+      #loader .box {
+        width: 85%;
+        padding: 15px;
+      }
+
+      .progress {
+        width: 200px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Fondo partículas -->
+  <canvas id="particles"></canvas>
+
+  <!-- Pantalla de carga -->
+  <div id="loader">
+    <div class="box">
+      <p id="loading-text">Cargando página...</p>
+      <div class="progress">
+        <div class="progress-bar" id="progress-bar"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contenido principal -->
+  <header>
+    <h1>Updates del Servidor</h1>
+  </header>
+
+  <div class="update">
+    <h2>Update 1.01a - Parche 1a</h2>
+    <ul>
+      <li>+ Se han añadido nuevos plugins para uso del "Admin".</li>
+      <li>Se corrigieron bugs en la Carcel.</li>
+      <li>Se han añadido TEMPORALMENTE 5h mas de juego durante 1 semana para las "Misiones".</li>
+      <li>Se han traducido algunos mensajes.</li>
+      <li>Preparativos para el mercado y aldea</li>
+      <li>NOTA: Apartir de esta semana comenzaremos a poner "Misiones" finalmente ✌️</li>
+      <li>Plugin Essentials añadido</li>
+    </ul>
+  </div>
+
+  <div class="update">
+    <h2>Update 1.01a - Servidor Base</h2>
+    <ul>
+      <li>Modpack Base</li>
+      <li>Shaders Base</li>
+      <li>Plugins base</li>
+    </ul>
+  </div>
+
+  <footer>
+    © 2025 Enigma Studios. Todos los derechos reservados.
+  </footer>
+
+  <script>
+    /* Loader */
+    const progressBar = document.getElementById("progress-bar");
+    const loader = document.getElementById("loader");
+    const loadingText = document.getElementById("loading-text");
+
+    const textos = [
+      "Cargando página...",
+      "Cargando actualizaciónes...",
+      "Cargando archivos de Daiquiri..."
+    ];
+
+    let progress = 0;
+    let index = 0;
+
+    const interval = setInterval(() => {
+      progress += 5;
+      progressBar.style.width = progress + "%";
+
+      if (progress % 30 === 0 && index < textos.length) {
+        loadingText.textContent = textos[index];
+        index++;
+      }
+
+      if (progress >= 100) {
+        clearInterval(interval);
+        loader.style.transition = "opacity 1s ease";
+        loader.style.opacity = "0";
+        setTimeout(() => loader.style.display = "none", 1000);
+      }
+    }, 200); // 5s total
+
+    /* Partículas */
+    const canvas = document.getElementById("particles");
+    const ctx = canvas.getContext("2d");
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const particlesArray = [];
+
+    class Particle {
+      constructor() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.size = Math.random() * 2 + 1;
+        this.speedX = (Math.random() - 0.5) * 1;
+        this.speedY = (Math.random() - 0.5) * 1;
+      }
+
+      update() {
+        this.x += this.speedX;
+        this.y += this.speedY;
+
+        if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
+        if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
+      }
+
+      draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fillStyle = "rgba(0,255,180,0.6)";
+        ctx.fill();
+      }
+    }
+
+    function init() {
+      for (let i = 0; i < 80; i++) {
+        particlesArray.push(new Particle());
+      }
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particlesArray.forEach(p => {
+        p.update();
+        p.draw();
+      });
+      requestAnimationFrame(animate);
+    }
+
+    init();
+    animate();
+
+    window.addEventListener("resize", () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+  </script>
+</body>
+</html>
